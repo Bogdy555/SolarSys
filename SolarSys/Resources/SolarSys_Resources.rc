@@ -1,0 +1,24 @@
+#include <SolarFuel_Resources.hpp>
+#include "..\Headers\SolarSys_Resources.hpp"
+
+
+
+#include <SolarFuel_WinTargetVer.hpp>
+#include <Windows.h>
+
+
+
+SOLAR_SYS_IDI_MAIN_ICON ICON L".\\Icons\\SolarSys_MainIcon.ico"
+
+
+
+SOLAR_SYS_IDM_MAIN_MANIFEST RT_MANIFEST L".\\Manifests\\SolarSys_MainManifest.manifest"
+
+
+
+SOLAR_SYS_IDS_DEFAULT_VERTEX_SHADER SOLAR_FUEL_GLSL_RESOURCE L".\\Shaders\\Default\\SolarSys_Vert.glsl"
+SOLAR_SYS_IDS_DEFAULT_FRAGMENT_SHADER SOLAR_FUEL_GLSL_RESOURCE L".\\Shaders\\Default\\SolarSys_Frag.glsl"
+
+
+
+#include "SolarSys_EnglishUS.rc2"
