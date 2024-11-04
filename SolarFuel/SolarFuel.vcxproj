@@ -179,12 +179,14 @@
     <ClInclude Include="Headers\SolarFuel_Dependencies.hpp" />
     <ClInclude Include="Headers\SolarFuel_Resources.hpp" />
     <ClInclude Include="Headers\SolarFuel_RunTime.hpp" />
+    <ClInclude Include="Headers\SolarFuel_Scene.hpp" />
     <ClInclude Include="Headers\SolarFuel_Time.hpp" />
     <ClInclude Include="Headers\SolarFuel_Window.hpp" />
     <ClInclude Include="Headers\SolarFuel_WinTargetVer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\SolarFuel_RunTime.cpp" />
+    <ClCompile Include="Sources\SolarFuel_Scene.cpp" />
     <ClCompile Include="Sources\SolarFuel_Time.cpp" />
     <ClCompile Include="Sources\SolarFuel_Window.cpp" />
   </ItemGroup>

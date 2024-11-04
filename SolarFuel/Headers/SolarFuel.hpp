@@ -14,6 +14,8 @@
 
 #include "SolarFuel_Window.hpp"
 
+#include "SolarFuel_Scene.hpp"
+
 
 
 #endif
