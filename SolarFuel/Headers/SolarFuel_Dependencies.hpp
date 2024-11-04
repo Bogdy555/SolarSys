@@ -52,6 +52,13 @@ namespace SolarFuel
 
 	class Window;
 
+	namespace Scene
+	{
+
+		struct Entity;
+
+	}
+
 }
 
 
