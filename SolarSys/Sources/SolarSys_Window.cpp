@@ -105,6 +105,8 @@ void SolarSys::Window::Data::operator= (Data&& _Other) noexcept
 	_Other.MinHeight = 400;
 }
 
+
+
 bool SolarSys::Window::InitWindowThread(void* _UserData)
 {
 	return true;

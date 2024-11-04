@@ -5,12 +5,16 @@
 
 
 #pragma comment(lib, "Winmm.lib")
+#pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glad.lib")
 
 
 
 #include "SolarFuel_WinTargetVer.hpp"
 #include <Windows.h>
+#include <glad.hpp>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include <iostream>
 #include <chrono>
