@@ -58,6 +58,9 @@ namespace SolarFuel
 			GLint TextureId = -1;
 			GLint TextureSizeId = -1;
 			GLint TexturePositionId = -1;
+
+			bool Load(const LPCWSTR _VertResId, const LPCWSTR _FragResId);
+			void Destroy();
 		};
 
 		struct Material

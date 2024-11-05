@@ -153,6 +153,162 @@ const glm::mat4 SolarFuel::Graphics::Camera::GetProjectionMatrix(const float _As
 
 
 
+bool SolarFuel::Graphics::Shader::Load(const LPCWSTR _VertResId, const LPCWSTR _FragResId)
+{
+	Destroy();
+
+	HINSTANCE _hInstance = GetModuleHandle(NULL);
+
+	HRSRC _VertResHandle = FindResource(_hInstance, _VertResId, MAKEINTRESOURCE(SOLAR_FUEL_GLSL_RESOURCE));
+
+	if (!_VertResHandle)
+	{
+		return false;
+	}
+
+	size_t _VertResSize = SizeofResource(_hInstance, _VertResHandle);
+
+	if (!_VertResSize)
+	{
+		return false;
+	}
+
+	const char* _VertResMemory = (const char*)(LoadResource(_hInstance, _VertResHandle));
+
+	if (!_VertResMemory)
+	{
+		return false;
+	}
+
+	char* _VertSrc = new char[_VertResSize + 1];
+
+	if (!_VertSrc)
+	{
+		FreeResource((HGLOBAL)(_VertResMemory));
+		return false;
+	}
+
+	_VertSrc[_VertResSize] = '\0';
+
+	for (size_t _Index = 0; _Index < _VertResSize; _Index++)
+	{
+		_VertSrc[_Index] = _VertResMemory[_Index];
+	}
+
+	FreeResource((HGLOBAL)(_VertResMemory));
+
+	HRSRC _FragResHandle = FindResource(_hInstance, _FragResId, MAKEINTRESOURCE(SOLAR_FUEL_GLSL_RESOURCE));
+
+	if (!_FragResHandle)
+	{
+		delete[] _VertSrc;
+		return false;
+	}
+
+	size_t _FragResSize = SizeofResource(_hInstance, _FragResHandle);
+
+	if (!_FragResSize)
+	{
+		delete[] _VertSrc;
+		return false;
+	}
+
+	const char* _FragResMemory = (const char*)(LoadResource(_hInstance, _FragResHandle));
+
+	if (!_FragResMemory)
+	{
+		delete[] _VertSrc;
+		return false;
+	}
+
+	char* _FragSrc = new char[_FragResSize + 1];
+
+	if (!_FragSrc)
+	{
+		FreeResource((HGLOBAL)(_FragResMemory));
+		delete[] _VertSrc;
+		return false;
+	}
+
+	_FragSrc[_FragResSize] = '\0';
+
+	for (size_t _Index = 0; _Index < _FragResSize; _Index++)
+	{
+		_FragSrc[_Index] = _FragResMemory[_Index];
+	}
+
+	FreeResource((HGLOBAL)(_FragResMemory));
+
+	Id = glCreateProgram();
+
+	if (!Id)
+	{
+		delete[] _VertSrc;
+		delete[] _FragSrc;
+		return false;
+	}
+
+	unsigned int _VertShader = glCreateShader(GL_VERTEX_SHADER);
+
+	if (!_VertShader)
+	{
+		glDeleteProgram(Id);
+		Id = 0;
+		delete[] _VertSrc;
+		delete[] _FragSrc;
+		return false;
+	}
+
+	glShaderSource(_VertShader, 1, &_VertSrc, nullptr);
+	glCompileShader(_VertShader);
+
+	unsigned int _FragShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	if (!_FragShader)
+	{
+		glDeleteShader(_VertShader);
+		glDeleteProgram(Id);
+		Id = 0;
+		delete[] _VertSrc;
+		delete[] _FragSrc;
+		return false;
+	}
+
+	glShaderSource(_FragShader, 1, &_FragSrc, nullptr);
+	glCompileShader(_FragShader);
+
+	glAttachShader(Id, _VertShader);
+	glAttachShader(Id, _FragShader);
+	glLinkProgram(Id);
+	glValidateProgram(Id);
+
+	glDetachShader(Id, _VertShader);
+	glDeleteShader(_VertShader);
+	glDetachShader(Id, _FragShader);
+	glDeleteShader(_FragShader);
+	delete[] _VertSrc;
+	delete[] _FragSrc;
+
+	return true;
+}
+
+void SolarFuel::Graphics::Shader::Destroy()
+{
+	if (Id != 0)
+	{
+		glDeleteProgram(Id);
+		Id = 0;
+	}
+
+	MvpId = -1;
+	ColorId = -1;
+	TextureId = -1;
+	TextureSizeId = -1;
+	TexturePositionId = -1;
+}
+
+
+
 void SolarFuel::Graphics::Renderer::Init()
 {
 	Destroy();
