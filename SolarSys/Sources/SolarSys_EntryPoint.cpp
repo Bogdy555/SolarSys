@@ -17,6 +17,14 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		return -1;
 	}
 
+	if (!SolarFuel::Graphics::Init())
+	{
+		MessageBox(NULL, L"An unexpected error occurred.", L"Error!", MB_OK | MB_ICONERROR);
+		SolarFuel::Time::Stop();
+		CoUninitialize();
+		return -1;
+	}
+
 	SolarSys::RunTime::Application _Application;
 
 	int32_t _ReturnValue = _Application.Run(_hInstance, _CmdLine, _ShowCmd);
@@ -26,6 +34,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		MessageBox(NULL, L"An unexpected error occurred.", L"Error!", MB_OK | MB_ICONERROR);
 	}
 
+	SolarFuel::Graphics::Stop();
 	SolarFuel::Time::Stop();
 	CoUninitialize();
 

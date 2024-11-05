@@ -45,6 +45,7 @@ namespace SolarSys
 			std::mutex CloseMutex;
 			std::mutex InputMutex;
 			std::mutex MinSizeMutex;
+			std::mutex ContextMutex;
 
 			bool InitMainWindow();
 			void CleanUpMainWindow();

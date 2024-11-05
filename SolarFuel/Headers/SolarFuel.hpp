@@ -16,7 +16,7 @@
 
 #include "SolarFuel_Scene.hpp"
 
-#include "SolarFuel_Renderer.hpp"
+#include "SolarFuel_Graphics.hpp"
 
 
 

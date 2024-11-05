@@ -109,5 +109,28 @@ void SolarSys::RunTime::MainMenu::Engine()
 
 void SolarSys::RunTime::MainMenu::FrameBuild()
 {
+	Application* _ApplicationObj = (Application*)(GetApplicationObj());
+	SolarFuel::Window& _MainWindow = _ApplicationObj->GetMainWindow();
+	Window::Data& _MainWindowData = _ApplicationObj->GetMainWindowData();
 
+	uint64_t _Width, _Height;
+	_MainWindow.GetClientSize(_Width, _Height);
+
+	HDC _hDC = GetDC(_MainWindow.GetHandle());
+	_MainWindowData.ContextMutex->lock();
+	wglMakeCurrent(_hDC, _MainWindowData.Context);
+	_MainWindowData.ContextMutex->unlock();
+	ReleaseDC(_MainWindow.GetHandle(), _hDC);
+
+	PAINTSTRUCT _PaintStruct = { 0 };
+	_hDC = BeginPaint(_MainWindow.GetHandle(), &_PaintStruct);
+
+	glViewport(0, 0, _Width, _Height);
+	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	SwapBuffers(_hDC);
+
+	EndPaint(_MainWindow.GetHandle(), &_PaintStruct);
+	wglMakeCurrent(NULL, NULL);
 }

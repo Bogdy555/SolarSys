@@ -14,6 +14,9 @@ namespace SolarFuel
 	namespace Graphics
 	{
 
+		bool Init();
+		void Stop();
+
 		struct Camera
 		{
 			glm::vec2 Position = glm::vec2(0.0f, 0.0f);

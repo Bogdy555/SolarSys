@@ -127,6 +127,7 @@ bool SolarSys::RunTime::Application::InitMainWindow()
 	MainWindowData.CloseMutex = &CloseMutex;
 	MainWindowData.MinSizeMutex = &MinSizeMutex;
 	MainWindowData.InputMutex = &InputMutex;
+	MainWindowData.ContextMutex = &ContextMutex;
 
 	if (!MainWindow.Create(NULL, SOLAR_SYS_WND_CLASS_NAME, L"SolarSys", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_DESKTOP, NULL, GetInstanceHandle(), nullptr, NULL, Window::InitWindowThread, Window::CleanUpWindowThread, Window::InitWindow, Window::CleanUpWindow, &MainWindowData))
 	{

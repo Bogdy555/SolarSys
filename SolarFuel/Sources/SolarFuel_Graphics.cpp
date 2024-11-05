@@ -2,6 +2,112 @@
 
 
 
+bool SolarFuel::Graphics::Init()
+{
+	WNDCLASSEX _WndClass = { 0 };
+
+	_WndClass.cbSize = sizeof(WNDCLASSEX);
+	_WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	_WndClass.lpfnWndProc = DefWindowProc;
+	_WndClass.cbClsExtra = 0;
+	_WndClass.cbWndExtra = 0;
+	_WndClass.hInstance = GetModuleHandle(nullptr);
+	_WndClass.hIcon = NULL;
+	_WndClass.hCursor = NULL;
+	_WndClass.hbrBackground = NULL;
+	_WndClass.lpszMenuName = nullptr;
+	_WndClass.lpszClassName = L"DummyWndClass";
+	_WndClass.hIconSm = NULL;
+
+	if (!RegisterClassEx(&_WndClass))
+	{
+		return false;
+	}
+
+	HWND _hWnd = CreateWindowEx(NULL, _WndClass.lpszClassName, L"DummyWindow", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, _WndClass.hInstance, nullptr);
+
+	if (!_hWnd)
+	{
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	HDC _WndDC = GetDC(_hWnd);
+
+	if (!_WndDC)
+	{
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	PIXELFORMATDESCRIPTOR _PFD = { 0 };
+
+	_PFD.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	_PFD.nVersion = 1;
+	_PFD.iPixelType = PFD_TYPE_RGBA;
+	_PFD.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	_PFD.cColorBits = 32;
+	_PFD.cAlphaBits = 8;
+	_PFD.cDepthBits = 24;
+	_PFD.cStencilBits = 8;
+	_PFD.iLayerType = PFD_MAIN_PLANE;
+
+	int _PForm = ChoosePixelFormat(_WndDC, &_PFD);
+
+	if (!_PForm)
+	{
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	if (!SetPixelFormat(_WndDC, _PForm, &_PFD))
+	{
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	HGLRC wglContext = wglCreateContext(_WndDC);
+
+	if (!wglContext)
+	{
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	if (!wglMakeCurrent(_WndDC, wglContext))
+	{
+		wglDeleteContext(wglContext);
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	gladLoadGL();
+
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(wglContext);
+	ReleaseDC(_hWnd, _WndDC);
+	DestroyWindow(_hWnd);
+	UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+
+	return true;
+}
+
+void SolarFuel::Graphics::Stop()
+{
+
+}
+
+
+
 const glm::mat4 SolarFuel::Graphics::Camera::GetViewMatrix() const
 {
 	return glm::rotate(glm::mat4(1.0f), glm::radians(Angle), glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(glm::mat4(1.0f), glm::vec3(-Position.x, -Position.y, 0.0f));

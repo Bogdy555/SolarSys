@@ -39,7 +39,7 @@
     <ClInclude Include="Headers\SolarFuel_Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\SolarFuel_Renderer.hpp">
+    <ClInclude Include="Headers\SolarFuel_Graphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClCompile Include="Sources\SolarFuel_Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\SolarFuel_Renderer.cpp">
+    <ClCompile Include="Sources\SolarFuel_Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
