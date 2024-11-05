@@ -2,6 +2,12 @@
 
 
 
+int (__stdcall *wglChoosePixelFormatARB)(HDC, const int*, const float*, unsigned int, int*, unsigned int*) = nullptr;
+HGLRC (__stdcall *wglCreateContextAttribsARB)(HDC, HGLRC, const int*) = nullptr;
+int (__stdcall *wglSwapIntervalEXT)(int) = nullptr;
+
+
+
 bool SolarFuel::Graphics::Init()
 {
 	WNDCLASSEX _WndClass = { 0 };
@@ -90,7 +96,32 @@ bool SolarFuel::Graphics::Init()
 		return false;
 	}
 
-	gladLoadGL();
+	if (!gladLoadGL())
+	{
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(wglContext);
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
+
+	wglChoosePixelFormatARB = (int (__stdcall*)(HDC, const int*, const float*, unsigned int, int*, unsigned int*))(wglGetProcAddress("wglChoosePixelFormatARB"));
+	wglCreateContextAttribsARB = (HGLRC (__stdcall*)(HDC, HGLRC, const int*))(wglGetProcAddress("wglCreateContextAttribsARB"));
+	wglSwapIntervalEXT = (int (__stdcall*)(int))(wglGetProcAddress("wglSwapIntervalEXT"));
+
+	if (!wglChoosePixelFormatARB || !wglCreateContextAttribsARB || !wglSwapIntervalEXT)
+	{
+		wglChoosePixelFormatARB = nullptr;
+		wglCreateContextAttribsARB = nullptr;
+		wglSwapIntervalEXT = nullptr;
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(wglContext);
+		ReleaseDC(_hWnd, _WndDC);
+		DestroyWindow(_hWnd);
+		UnregisterClass(_WndClass.lpszClassName, _WndClass.hInstance);
+		return false;
+	}
 
 	wglMakeCurrent(NULL, NULL);
 	wglDeleteContext(wglContext);
@@ -103,7 +134,9 @@ bool SolarFuel::Graphics::Init()
 
 void SolarFuel::Graphics::Stop()
 {
-
+	wglChoosePixelFormatARB = nullptr;
+	wglCreateContextAttribsARB = nullptr;
+	wglSwapIntervalEXT = nullptr;
 }
 
 

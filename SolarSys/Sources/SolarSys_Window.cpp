@@ -129,55 +129,66 @@ bool SolarSys::Window::InitWindow(SolarFuel::Window* _Wnd)
 {
 	Data& _WindowData = *(Data*)(_Wnd->GetUserData());
 	
-	HWND _hWnd = _Wnd->GetHandle();
+	HDC _hWndDC = GetDC(_Wnd->GetHandle());
 
-	HDC _WndDC = GetDC(_hWnd);
-
-	if (!_WndDC)
+	if (!_hWndDC)
 	{
+		return false;
+	}
+
+	int _PixelDescriptionVec[] =
+	{
+		WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+		WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+		WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_COLOR_BITS_ARB, 32,
+		WGL_DEPTH_BITS_ARB, 24,
+		WGL_STENCIL_BITS_ARB, 8,
+		0
+	};
+
+	int _PixelFormatID = 0;
+	unsigned int _FormatCount = 0;
+
+	if (!wglChoosePixelFormatARB(_hWndDC, _PixelDescriptionVec, nullptr, 1, &_PixelFormatID, &_FormatCount))
+	{
+		ReleaseDC(_Wnd->GetHandle(), _hWndDC);
 		return false;
 	}
 
 	PIXELFORMATDESCRIPTOR _PFD = { 0 };
 
-	_PFD.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	_PFD.nVersion = 1;
-	_PFD.iPixelType = PFD_TYPE_RGBA;
-	_PFD.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	_PFD.cColorBits = 32;
-	_PFD.cAlphaBits = 8;
-	_PFD.cDepthBits = 24;
-	_PFD.cStencilBits = 8;
-	_PFD.iLayerType = PFD_MAIN_PLANE;
-
-	int _PForm = ChoosePixelFormat(_WndDC, &_PFD);
-
-	if (!_PForm)
+	if (!DescribePixelFormat(_hWndDC, _PixelFormatID, sizeof(PIXELFORMATDESCRIPTOR), &_PFD))
 	{
-		ReleaseDC(_hWnd, _WndDC);
+		ReleaseDC(_Wnd->GetHandle(), _hWndDC);
 		return false;
 	}
 
-	if (!SetPixelFormat(_WndDC, _PForm, &_PFD))
+	if (!SetPixelFormat(_hWndDC, _PixelFormatID, &_PFD))
 	{
-		ReleaseDC(_hWnd, _WndDC);
+		ReleaseDC(_Wnd->GetHandle(), _hWndDC);
 		return false;
 	}
 
-	HGLRC wglContext = wglCreateContext(_WndDC);
-
-	if (!wglContext)
+	int _AttribList[] =
 	{
-		ReleaseDC(_hWnd, _WndDC);
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+		0
+	};
+
+	_WindowData.Context = wglCreateContextAttribsARB(_hWndDC, 0, _AttribList);
+
+	if (!_WindowData.Context)
+	{
+		ReleaseDC(_Wnd->GetHandle(), _hWndDC);
 		return false;
 	}
 
-	if (!wglMakeCurrent(_WndDC, wglContext))
-	{
-		wglDeleteContext(wglContext);
-		ReleaseDC(_hWnd, _WndDC);
-		return false;
-	}
+	ReleaseDC(_Wnd->GetHandle(), _hWndDC);
 
 	return true;
 }

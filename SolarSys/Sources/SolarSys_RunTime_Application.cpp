@@ -32,6 +32,16 @@ const SolarSys::Window::Data& SolarSys::RunTime::Application::GetMainWindowData(
 	return MainWindowData;
 }
 
+SolarFuel::Graphics::Renderer& SolarSys::RunTime::Application::GetDefaultRenderer()
+{
+	return DefaultRenderer;
+}
+
+const SolarFuel::Graphics::Renderer& SolarSys::RunTime::Application::GetDefaultRenderer() const
+{
+	return DefaultRenderer;
+}
+
 void SolarSys::RunTime::Application::UpdateFullScreen()
 {
 	MainWindowData.FullScreenMutex->lock();
@@ -167,6 +177,8 @@ void SolarSys::RunTime::Application::Setup()
 		return;
 	}
 
+	DefaultRenderer.Init();
+
 	if (!MainWindow.Show(GetShowCmd()))
 	{
 		Close(-1);
@@ -197,5 +209,6 @@ void SolarSys::RunTime::Application::Update()
 
 void SolarSys::RunTime::Application::Stop()
 {
+	DefaultRenderer.Destroy();
 	CleanUpMainWindow();
 }

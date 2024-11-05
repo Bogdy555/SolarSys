@@ -42,11 +42,11 @@ void SolarSys::RunTime::MainMenu::Stop()
 
 void SolarSys::RunTime::MainMenu::Input()
 {
-	Application* _ApplicationObj = (Application*)(GetApplicationObj());
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 
-	SolarFuel::Window& _MainWindow = _ApplicationObj->GetMainWindow();
+	SolarFuel::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 
-	Window::Data& _MainWindowData = _ApplicationObj->GetMainWindowData();
+	Window::Data& _MainWindowData = _ApplicationObj.GetMainWindowData();
 
 	_MainWindowData.InputMutex->lock();
 
@@ -79,29 +79,29 @@ void SolarSys::RunTime::MainMenu::DeleteInput()
 
 void SolarSys::RunTime::MainMenu::Engine()
 {
-	Application* _ApplicationObj = (Application*)(GetApplicationObj());
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
 
-	SolarFuel::Window& _MainWindow = _ApplicationObj->GetMainWindow();
+	SolarFuel::Window& _MainWindow = _ApplicationObj.GetMainWindow();
 
-	Window::Data& _MainWindowData = _ApplicationObj->GetMainWindowData();
+	Window::Data& _MainWindowData = _ApplicationObj.GetMainWindowData();
 
 	if (Keys[SolarFuel::_Previous][VK_F11] && !Keys[SolarFuel::_Current][VK_F11])
 	{
-		_ApplicationObj->UpdateFullScreen();
+		_ApplicationObj.UpdateFullScreen();
 	}
 
 	if (Keys[SolarFuel::_Previous][VK_ESCAPE] && Keys[SolarFuel::_Current][VK_ESCAPE])
 	{
-		_ApplicationObj->Close(0);
+		_ApplicationObj.Close(0);
 	}
 
-	_ApplicationObj->SetSync(_MainWindow.GetRefreshRate());
+	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
 	_MainWindowData.CloseMutex->lock();
 
 	if (_MainWindowData.Close)
 	{
-		_ApplicationObj->Close(0);
+		_ApplicationObj.Close(0);
 	}
 
 	_MainWindowData.CloseMutex->unlock();
@@ -109,9 +109,10 @@ void SolarSys::RunTime::MainMenu::Engine()
 
 void SolarSys::RunTime::MainMenu::FrameBuild()
 {
-	Application* _ApplicationObj = (Application*)(GetApplicationObj());
-	SolarFuel::Window& _MainWindow = _ApplicationObj->GetMainWindow();
-	Window::Data& _MainWindowData = _ApplicationObj->GetMainWindowData();
+	Application& _ApplicationObj = *(Application*)(GetApplicationObj());
+	SolarFuel::Window& _MainWindow = _ApplicationObj.GetMainWindow();
+	Window::Data& _MainWindowData = _ApplicationObj.GetMainWindowData();
+	SolarFuel::Graphics::Renderer& _Renderer = _ApplicationObj.GetDefaultRenderer();
 
 	uint64_t _Width, _Height;
 	_MainWindow.GetClientSize(_Width, _Height);
@@ -126,9 +127,14 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	_hDC = BeginPaint(_MainWindow.GetHandle(), &_PaintStruct);
 
 	glViewport(0, 0, _Width, _Height);
-	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
 
+	//_Renderer.StartScene();
+
+	//_Renderer.Submit();
+
+	//_Renderer.Flush();
+
+	wglSwapIntervalEXT(1);
 	SwapBuffers(_hDC);
 
 	EndPaint(_MainWindow.GetHandle(), &_PaintStruct);

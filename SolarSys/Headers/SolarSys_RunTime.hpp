@@ -30,6 +30,9 @@ namespace SolarSys
 			Window::Data& GetMainWindowData();
 			const Window::Data& GetMainWindowData() const;
 
+			SolarFuel::Graphics::Renderer& GetDefaultRenderer();
+			const SolarFuel::Graphics::Renderer& GetDefaultRenderer() const;
+
 			void UpdateFullScreen();
 
 			void operator= (const Application& _Other) = delete;
@@ -46,6 +49,8 @@ namespace SolarSys
 			std::mutex InputMutex;
 			std::mutex MinSizeMutex;
 			std::mutex ContextMutex;
+
+			SolarFuel::Graphics::Renderer DefaultRenderer;
 
 			bool InitMainWindow();
 			void CleanUpMainWindow();
