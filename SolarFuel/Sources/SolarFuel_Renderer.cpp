@@ -14,8 +14,10 @@ const glm::mat4 SolarFuel::Graphics::Camera::GetProjectionMatrix(const float _As
 
 
 
-bool SolarFuel::Graphics::Renderer::Init()
+void SolarFuel::Graphics::Renderer::Init()
 {
+	Destroy();
+
 	std::vector<float> VBO =
 	{
 		-0.5f, -0.5f, 0.0f, 0.0f,
@@ -53,9 +55,22 @@ void SolarFuel::Graphics::Renderer::Destroy()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	glDeleteBuffers(1, &QuadVBO);
-	glDeleteBuffers(1, &QuadIBO);
-	glDeleteVertexArrays(1, &QuadVAO);
+
+	if (QuadVBO)
+	{
+		glDeleteBuffers(1, &QuadVBO);
+		QuadVBO = 0;
+	}
+	if (QuadIBO)
+	{
+		glDeleteBuffers(1, &QuadIBO);
+		QuadIBO = 0;
+	}
+	if (QuadVAO)
+	{
+		glDeleteVertexArrays(1, &QuadVAO);
+		QuadVAO = 0;
+	}
 }
 
 void SolarFuel::Graphics::Renderer::StartScene(const Camera& _ActiveCamera, const float _AspectRatio)
@@ -72,24 +87,28 @@ void SolarFuel::Graphics::Renderer::Submit(const RenderObject& _Object)
 
 void SolarFuel::Graphics::Renderer::Flush()
 {
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	for (const RenderObject& _Object : RenderObjects)
 	{
+		glm::mat4 _Mvp = Projection * View * _Object.Model;
+
 		glBindVertexArray(QuadVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, QuadVBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, QuadIBO);
-		glUseProgram(_Object.Shader);
 
-		glm::mat4 Mvp = Projection * View * _Object.Model;
+		glUseProgram(_Object.Material->Shader->Id);
+		glUniformMatrix4fv(_Object.Material->Shader->MvpId, 1, GL_FALSE, &_Mvp[0][0]);
+		glUniform4fv(_Object.Material->Shader->ColorId, 1, &_Object.Material->Color[0]);
+		glUniform1iv(_Object.Material->Shader->TextureId, 1, &_Object.Material->Texture);
+		glUniform2fv(_Object.Material->Shader->TextureSizeId, 1, &_Object.Material->TextureSize[0]);
+		glUniform2fv(_Object.Material->Shader->TexturePositionId, 1, &_Object.Material->TexturePosition[0]);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-#ifdef _DEBUG
-		glUseProgram(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-#endif
 	}
 
+	Projection = glm::mat4(1.0f);
+	View = glm::mat4(1.0f);
 	RenderObjects.clear();
 }

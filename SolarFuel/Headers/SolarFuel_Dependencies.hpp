@@ -64,6 +64,10 @@ namespace SolarFuel
 
 		struct Camera;
 
+		struct Shader;
+
+		struct Material;
+
 		struct RenderObject;
 
 		struct Renderer;
