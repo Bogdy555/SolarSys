@@ -32,8 +32,10 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 			float posY = j;
 			nLehmer = ((int)(posY / SpatiuIntreGriduri)) << 20 | ((int)(posX / SpatiuIntreGriduri));
 			if (Lehmer32() % 256 < 32) {
-				Childs.push_back(new Entity);
-				Childs[Childs.size() - 1]->Position = glm::vec2(posX, posY);
+				Entity* entity = new Entity;
+				entity->Parent = this;
+				entity->Position = glm::vec2(posX, posY);
+				Childs.push_back(entity);
 			}
 		}
 	}
@@ -42,11 +44,23 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 	{
 		srand(Sun->Position.x + Sun->Position.y);
 		int NrPlanets = rand() % 7;
-		float Dist = SpatiuIntreGriduri / 7;
+		float Dist = (float) SpatiuIntreGriduri / 7;
 		for (int i = 0; i < NrPlanets; i++)
 		{
-			Sun->Childs.push_back(new Entity);
-			
+			Entity* Planet = new Entity;
+			Planet->Parent = Sun;
+			Planet->Position = glm::vec2(Sun->Position.x + Dist*(i+1), Sun->Position.y);
+			Sun->Childs.push_back(Planet);
+			srand(Planet->Position.x + Planet->Position.y);
+			int NrSatelites = rand() % 4;
+			float DistSatelites =(float) Dist / 4;
+			for (int j = 0; j < NrSatelites; j++)
+			{
+				Entity* Satelite = new Entity;
+				Satelite->Parent = Planet;
+				Satelite->Position = glm::vec2(Planet->Position.x, Planet->Position.y + DistSatelites * (j + 1));
+				Planet->Childs.push_back(Satelite);
+			}
 		}
 	}
 }
