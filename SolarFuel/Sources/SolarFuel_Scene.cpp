@@ -49,16 +49,15 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 		{
 			Entity* Planet = new Entity;
 			Planet->Parent = Sun;
-			Planet->Position = glm::vec2(Sun->Position.x + Dist*(i+1), Sun->Position.y);
+			Planet->Position = glm::vec2(Dist*(i+1), Sun->Position.y);
 			Sun->Childs.push_back(Planet);
-			srand(Planet->Position.x + Planet->Position.y);
 			int NrSatelites = rand() % 4;
 			float DistSatelites =(float) Dist / 4;
 			for (int j = 0; j < NrSatelites; j++)
 			{
 				Entity* Satelite = new Entity;
 				Satelite->Parent = Planet;
-				Satelite->Position = glm::vec2(Planet->Position.x, Planet->Position.y + DistSatelites * (j + 1));
+				Satelite->Position = glm::vec2(Planet->Position.x, DistSatelites * (j + 1));
 				Planet->Childs.push_back(Satelite);
 			}
 		}
