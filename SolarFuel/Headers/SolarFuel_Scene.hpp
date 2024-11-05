@@ -16,22 +16,18 @@ namespace SolarFuel
 
 		struct Entity
 		{
-			//hierarchy variables
 			Entity* Parent = nullptr;
 			std::vector<Entity*> Childs;
 
-			//transform variables
-			glm::vec2 Position;
-			glm::vec2 Scale;
-			float Angle;
+			glm::vec2 Position = glm::vec2(0.0f, 0.0f);
+			glm::vec2 Scale = glm::vec2(1.0f, 1.0f);
+			float Angle = 0.0f;
 
-			//rotation animation variable
-			float RotationFrequency;
+			float RotationFrequency = 0.0f;
 
-			//helper methods
 			void DestroyAllChilds();
-			glm::mat4 GetLocalMatrix();
-			glm::mat4 GetWorldMatrix();
+			const glm::mat4 GetLocalMatrix() const;
+			const glm::mat4 GetWorldMatrix() const;
 		};
 
 	}
