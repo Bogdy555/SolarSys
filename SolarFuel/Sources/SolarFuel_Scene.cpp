@@ -25,9 +25,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 		return;
 	}
 
-	constexpr float _GridUnit = 10.0f;
-	constexpr size_t _MaxPlanetsCount = 10;
-	constexpr size_t _MaxSatelitesCount = 10;
+	constexpr float _GridUnit = 25.0f;
 
 	for (float _X = ceil((_CameraPosition.x - _Width / 2.0f) / _GridUnit) * _GridUnit; _X <= _CameraPosition.x + _Width / 2.0f; _X += _GridUnit)
 	{
@@ -44,37 +42,37 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 
 			_Sun->Parent = this;
 			_Sun->Position = glm::vec2(_X, _Y);
-			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 1.0f;
-			_Sun->Angle = 0.0f;
-			_Sun->RotationFrequency = 0.0f;
+			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 10.0f;
+			_Sun->RotationFrequency = (float)(Lehmer() % 50 + 30);
+			_Sun->Angle = _ElapsedTime * _Sun->RotationFrequency + (float)(Lehmer() % 360);
 
 			Childs.push_back(_Sun);
 
-			size_t _PlanetsCount = Lehmer() % _MaxPlanetsCount;
+			size_t _PlanetsCount = Lehmer() % 5;
 
 			for (size_t _PlanetIndex = 0; _PlanetIndex < _PlanetsCount; _PlanetIndex++)
 			{
 				Entity* _Planet = new Entity();
 
 				_Planet->Parent = _Sun;
-				_Planet->Position = glm::vec2((float)(_PlanetIndex + 1), 0.0f);
-				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 0.5f;
-				_Planet->Angle = 0.0f;
-				_Planet->RotationFrequency = 0.0f;
+				_Planet->Position = glm::rotate(glm::mat4(1.0f), glm::radians((float)(Lehmer() % 360)), glm::vec3(0.0f, 0.0f, 1.0f)) * glm::vec4((float)(_PlanetIndex) * 2.0f + 6.0f, 0.0f, 0.0f, 1.0f);
+				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 1.0f;
+				_Planet->RotationFrequency = (float)(Lehmer() % 30 + 10);
+				_Planet->Angle = _ElapsedTime * _Planet->RotationFrequency + (float)(Lehmer() % 360);
 
 				_Sun->Childs.push_back(_Planet);
 
-				size_t _SatelitesCount = Lehmer() % _MaxPlanetsCount;
+				size_t _SatelitesCount = Lehmer() % 2;
 
 				for (size_t _SateliteIndex = 0; _SateliteIndex < _SatelitesCount; _SateliteIndex++)
 				{
 					Entity* _Satelite = new Entity();
 
 					_Satelite->Parent = _Planet;
-					_Satelite->Position = glm::vec2((float)(_SateliteIndex + 1), 0.0f);
-					_Satelite->Scale = glm::vec2(1.0f, 1.0f) * 0.25f;
-					_Satelite->Angle = 0.0f;
-					_Satelite->RotationFrequency = 0.0f;
+					_Satelite->Position = glm::rotate(glm::mat4(1.0f), glm::radians((float)(Lehmer() % 360)), glm::vec3(0.0f, 0.0f, 1.0f)) * glm::vec4((float)(_SateliteIndex) * 1.0f + 1.5f, 0.0f, 0.0f, 1.0f);
+					_Satelite->Scale = glm::vec2(1.0f, 1.0f) * 0.5f;
+					_Satelite->RotationFrequency = (float)(Lehmer() % 10 + 5);
+					_Satelite->Angle = _ElapsedTime * _Satelite->RotationFrequency + (float)(Lehmer() % 360);
 
 					_Planet->Childs.push_back(_Satelite);
 				}
@@ -96,7 +94,17 @@ void SolarFuel::Scene::Entity::DestroyAllChilds()
 
 const glm::mat4 SolarFuel::Scene::Entity::GetLocalMatrix() const
 {
-	return glm::translate(glm::mat4(1.0f), glm::vec3(Position.x, Position.y, 0.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(Angle), glm::vec3(0.0f, 0.0f, 1.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(Scale.x, Scale.y, 1.0f));
+	float _Sin = sinf(glm::radians(Angle));
+	float _Cos = cosf(glm::radians(Angle));
+
+	glm::mat4 _Transform = glm::mat4(1.0f);
+
+	_Transform[0][0] = Scale.x * _Cos; _Transform[1][0] = -Scale.y * _Sin; _Transform[2][0] = 0.0f; _Transform[3][0] = Position.x;
+	_Transform[0][1] = Scale.x * _Sin; _Transform[1][1] = Scale.y * _Cos; _Transform[2][1] = 0.0f; _Transform[3][1] = Position.y;
+	_Transform[0][2] = 0.0f; _Transform[1][2] = 0.0f; _Transform[2][2] = 0.0f; _Transform[3][2] = 0.0f;
+	_Transform[0][3] = 0.0f; _Transform[1][3] = 0.0f; _Transform[2][3] = 0.0f; _Transform[3][3] = 1.0f;
+
+	return _Transform;
 }
 
 const glm::mat4 SolarFuel::Scene::Entity::GetWorldMatrix() const

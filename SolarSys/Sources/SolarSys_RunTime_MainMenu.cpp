@@ -150,7 +150,7 @@ void SolarSys::RunTime::MainMenu::Engine()
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
 
 	Scene.DestroyAllChilds();
-	Scene.GenerateSystem(Position, Zoom * _AspectRatio, Zoom, ElapsedTime);
+	Scene.GenerateSystem(Position, Zoom * _AspectRatio * 10.0f, Zoom * 10.0f, ElapsedTime);
 
 	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
@@ -176,14 +176,12 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
 
-	HDC _hDC = GetDC(_MainWindow.GetHandle());
+	PAINTSTRUCT _PaintStruct = { 0 };
+	HDC _hDC = BeginPaint(_MainWindow.GetHandle(), &_PaintStruct);
+
 	_MainWindowData.ContextMutex->lock();
 	wglMakeCurrent(_hDC, _MainWindowData.Context);
 	_MainWindowData.ContextMutex->unlock();
-	ReleaseDC(_MainWindow.GetHandle(), _hDC);
-
-	PAINTSTRUCT _PaintStruct = { 0 };
-	_hDC = BeginPaint(_MainWindow.GetHandle(), &_PaintStruct);
 
 	glViewport(0, 0, (int)(_Width), (int)(_Height));
 
@@ -195,43 +193,33 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 
 	_Renderer.StartScene(_ActiveCamera, _AspectRatio);
 
-	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
+	struct QueueObject
 	{
-		SolarFuel::Graphics::RenderObject _Object;
+		const SolarFuel::Scene::Entity* Entity = nullptr;
+		const glm::mat4 Transform = glm::mat4(1.0f);
+	};
 
-		_Object.Model = _Entity->GetWorldMatrix();
-		_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+	std::queue<QueueObject> _Queue;
 
-		_Renderer.Submit(_Object);
-	}
+	_Queue.push(QueueObject(&Scene, Scene.GetLocalMatrix()));
 
-	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
+	while (_Queue.size())
 	{
-		for (const SolarFuel::Scene::Entity* _SubEntity : _Entity->Childs)
+		QueueObject& _CurrentObject = _Queue.front();
+
+		for (const SolarFuel::Scene::Entity* _Child : _CurrentObject.Entity->Childs)
 		{
-			SolarFuel::Graphics::RenderObject _Object;
+			SolarFuel::Graphics::RenderObject _RenderObject;
 
-			_Object.Model = _SubEntity->GetWorldMatrix();
-			_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+			_RenderObject.Model = _CurrentObject.Transform * _Child->GetLocalMatrix();
+			_RenderObject.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
 
-			_Renderer.Submit(_Object);
+			_Renderer.Submit(_RenderObject);
+
+			_Queue.push(QueueObject(_Child, _RenderObject.Model));
 		}
-	}
 
-	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
-	{
-		for (const SolarFuel::Scene::Entity* _SubEntity : _Entity->Childs)
-		{
-			for (const SolarFuel::Scene::Entity* _SubSubEntity : _SubEntity->Childs)
-			{
-				SolarFuel::Graphics::RenderObject _Object;
-
-				_Object.Model = _SubSubEntity->GetWorldMatrix();
-				_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
-
-				_Renderer.Submit(_Object);
-			}
-		}
+		_Queue.pop();
 	}
 
 	_Renderer.Flush();
@@ -239,6 +227,6 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	wglSwapIntervalEXT(1);
 	SwapBuffers(_hDC);
 
-	EndPaint(_MainWindow.GetHandle(), &_PaintStruct);
 	wglMakeCurrent(NULL, NULL);
+	EndPaint(_MainWindow.GetHandle(), &_PaintStruct);
 }

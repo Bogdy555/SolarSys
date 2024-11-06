@@ -370,8 +370,7 @@ void SolarFuel::Graphics::Renderer::Destroy()
 
 void SolarFuel::Graphics::Renderer::StartScene(const Camera& _ActiveCamera, const float _AspectRatio)
 {
-	Projection = _ActiveCamera.GetProjectionMatrix(_AspectRatio);
-	View = _ActiveCamera.GetViewMatrix();
+	ProjectionView = _ActiveCamera.GetProjectionMatrix(_AspectRatio) * _ActiveCamera.GetViewMatrix();
 	RenderObjects.clear();
 }
 
@@ -387,7 +386,7 @@ void SolarFuel::Graphics::Renderer::Flush()
 
 	for (const RenderObject& _Object : RenderObjects)
 	{
-		glm::mat4 _Mvp = Projection * View * _Object.Model;
+		glm::mat4 _Mvp = ProjectionView * _Object.Model;
 
 		glBindVertexArray(QuadVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, QuadVBO);
@@ -400,7 +399,6 @@ void SolarFuel::Graphics::Renderer::Flush()
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 
-	Projection = glm::mat4(1.0f);
-	View = glm::mat4(1.0f);
+	ProjectionView = glm::mat4(1.0f);
 	RenderObjects.clear();
 }

@@ -74,8 +74,7 @@ namespace SolarFuel
 
 		struct Renderer
 		{
-			glm::mat4 Projection = glm::mat4(1.0f);
-			glm::mat4 View = glm::mat4(1.0f);
+			glm::mat4 ProjectionView = glm::mat4(1.0f);
 			std::vector<RenderObject> RenderObjects;
 			GLuint QuadVAO = 0;
 			GLuint QuadVBO = 0;
