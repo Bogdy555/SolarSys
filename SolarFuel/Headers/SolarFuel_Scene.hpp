@@ -25,7 +25,9 @@ namespace SolarFuel
 
 			float RotationFrequency = 0.0f;
 
-			void GenerateSystem(const glm::vec2& _CameraPosition, const float _Width, const float _Height, const float _ElapsedTime);
+			size_t Material = 0;
+
+			void GenerateSystem(const glm::vec2& _CameraPosition, const float _Width, const float _Height, const float _ElapsedTime, const size_t _BeginMaterialsSuns, const size_t _EndMaterialsSuns, const size_t _BeginMaterialsPlanets, const size_t _EndMaterialsPlanets, const size_t _BeginMaterialsSatelites, const size_t _EndMaterialsSatelites);
 			void DestroyAllChilds();
 			const glm::mat4 GetLocalMatrix() const;
 			const glm::mat4 GetWorldMatrix() const;

@@ -35,7 +35,14 @@ namespace SolarSys
 
 			enum ShaderTags : const size_t
 			{
-				_DefaultShader = 0
+				_DefaultShader = 0,
+				_Planet1Shader = 1,
+				_Planet2Shader = 2,
+				_Planet3Shader = 3,
+				_Planet4Shader = 4,
+				_Planet5Shader = 5,
+				_Sun1Shader = 6,
+				_Sun2Shader = 7
 			};
 
 			SolarFuel::Graphics::Shader& GetShader(const size_t _Index);
@@ -43,7 +50,14 @@ namespace SolarSys
 
 			enum MaterialTags : const size_t
 			{
-				_DefaultMaterial = 0
+				_DefaultMaterial = 0,
+				_Planet1Material = 1,
+				_Planet2Material = 2,
+				_Planet3Material = 3,
+				_Planet4Material = 4,
+				_Planet5Material = 5,
+				_Sun1Material = 6,
+				_Sun2Material = 7
 			};
 
 			SolarFuel::Graphics::Material& GetMaterial(const size_t _Index);

@@ -35,21 +35,25 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x64", "x64", "{2211FFB9-952C-4EC9-957D-2159D2710646}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Dependencies\glad\Lib\Debug\x64\glad.lib = Solution Items\Dependencies\glad\Lib\Debug\x64\glad.lib
+		Solution Items\Dependencies\glad\Lib\Debug\x64\glad.pdb = Solution Items\Dependencies\glad\Lib\Debug\x64\glad.pdb
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x86", "x86", "{4A60F412-2496-4F54-8272-DE6F583CE318}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Dependencies\glad\Lib\Debug\x86\glad.lib = Solution Items\Dependencies\glad\Lib\Debug\x86\glad.lib
+		Solution Items\Dependencies\glad\Lib\Debug\x86\glad.pdb = Solution Items\Dependencies\glad\Lib\Debug\x86\glad.pdb
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x64", "x64", "{BB052271-05ED-4ABC-8397-E8E5024E8E33}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Dependencies\glad\Lib\Release\x64\glad.lib = Solution Items\Dependencies\glad\Lib\Release\x64\glad.lib
+		Solution Items\Dependencies\glad\Lib\Release\x64\glad.pdb = Solution Items\Dependencies\glad\Lib\Release\x64\glad.pdb
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x86", "x86", "{9E8777C9-E420-418D-86B8-2C38D3ED14A2}"
 	ProjectSection(SolutionItems) = preProject
 		Solution Items\Dependencies\glad\Lib\Release\x86\glad.lib = Solution Items\Dependencies\glad\Lib\Release\x86\glad.lib
+		Solution Items\Dependencies\glad\Lib\Release\x86\glad.pdb = Solution Items\Dependencies\glad\Lib\Release\x86\glad.pdb
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "glm", "glm", "{7C770357-6849-4DAE-BD34-53CB48BA24BD}"
