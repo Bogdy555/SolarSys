@@ -14,4 +14,4 @@ An application that generates a universe and renderes it.
 WASD for movement.
 E and Q to zoom in and out.
 
-![Example](https://github.com/Bogdy555/SolarSys/tree/Master/Solution%20Items/ReadMe%20Resources/SolarSys_ScreenShot.png)
+![ScreenShot](https://github.com/Bogdy555/SolarSys/blob/Master/Solution%20Items/ReadMe%20Resources/SolarSys_ScreenShot.png)
