@@ -145,7 +145,7 @@ void SolarSys::RunTime::MainMenu::Engine()
 
 	ElapsedTime += GetTimeStep();
 
-	uint64_t _Width, _Height;
+	size_t _Width, _Height;
 	_MainWindow.GetClientSize(_Width, _Height);
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
 
@@ -171,7 +171,7 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	Window::Data& _MainWindowData = _ApplicationObj.GetMainWindowData();
 	SolarFuel::Graphics::Renderer& _Renderer = _ApplicationObj.GetDefaultRenderer();
 
-	uint64_t _Width, _Height;
+	size_t _Width, _Height;
 	_MainWindow.GetClientSize(_Width, _Height);
 
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
