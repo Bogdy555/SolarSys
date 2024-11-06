@@ -21,7 +21,9 @@ void main()
 {
 	vec2 _CenterUV = vf_TextureCoords * 2.0f - 1.0f;
 
-	if (length(_CenterUV) > 1.0f)
+	float _UVLength = length(_CenterUV);
+
+	if (_UVLength > 1.0f)
 	{
 		discard;
 	}

@@ -105,7 +105,7 @@ void SolarSys::RunTime::MainMenu::Engine()
 	}
 
 	float _Speed = Zoom;
-	float _ZoomSpeed = 10.0f;
+	float _ZoomSpeed = 30.0f;
 	float _ZoomMin = 5.0f;
 
 	if (Keys[SolarFuel::_Current]['D'])
@@ -150,7 +150,7 @@ void SolarSys::RunTime::MainMenu::Engine()
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
 
 	Scene.DestroyAllChilds();
-	Scene.GenerateSystem(Position, Zoom * _AspectRatio * 10.0f, Zoom * 10.0f, ElapsedTime, 1, 3, 3, 8, 3, 8);
+	Scene.GenerateSystem(Position, Zoom * _AspectRatio * 10.0f, Zoom * 10.0f, ElapsedTime, 6, 8, 1, 6, 1, 6);
 
 	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
