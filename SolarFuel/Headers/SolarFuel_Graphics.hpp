@@ -55,9 +55,6 @@ namespace SolarFuel
 			GLuint Id = 0;
 			GLint MvpId = -1;
 			GLint ColorId = -1;
-			GLint TextureId = -1;
-			GLint TextureSizeId = -1;
-			GLint TexturePositionId = -1;
 
 			bool Load(const LPCWSTR _VertResId, const LPCWSTR _FragResId);
 			void Destroy();
@@ -67,9 +64,6 @@ namespace SolarFuel
 		{
 			const Shader* Shader = nullptr;
 			glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			int Texture = 0;
-			glm::vec2 TextureSize = glm::vec2(1.0f, 1.0f);
-			glm::vec2 TexturePosition = glm::vec2(0.0f, 0.0f);
 		};
 
 		struct RenderObject

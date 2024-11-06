@@ -289,6 +289,9 @@ bool SolarFuel::Graphics::Shader::Load(const LPCWSTR _VertResId, const LPCWSTR _
 	delete[] _VertSrc;
 	delete[] _FragSrc;
 
+	MvpId = glGetUniformLocation(Id, "u_Mvp");
+	ColorId = glGetUniformLocation(Id, "u_Color");
+
 	return true;
 }
 
@@ -302,9 +305,6 @@ void SolarFuel::Graphics::Shader::Destroy()
 
 	MvpId = -1;
 	ColorId = -1;
-	TextureId = -1;
-	TextureSizeId = -1;
-	TexturePositionId = -1;
 }
 
 
@@ -396,9 +396,6 @@ void SolarFuel::Graphics::Renderer::Flush()
 		glUseProgram(_Object.Material->Shader->Id);
 		glUniformMatrix4fv(_Object.Material->Shader->MvpId, 1, GL_FALSE, &_Mvp[0][0]);
 		glUniform4fv(_Object.Material->Shader->ColorId, 1, &_Object.Material->Color[0]);
-		glUniform1iv(_Object.Material->Shader->TextureId, 1, &_Object.Material->Texture);
-		glUniform2fv(_Object.Material->Shader->TextureSizeId, 1, &_Object.Material->TextureSize[0]);
-		glUniform2fv(_Object.Material->Shader->TexturePositionId, 1, &_Object.Material->TexturePosition[0]);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}

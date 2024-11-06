@@ -33,6 +33,22 @@ namespace SolarSys
 			SolarFuel::Graphics::Renderer& GetDefaultRenderer();
 			const SolarFuel::Graphics::Renderer& GetDefaultRenderer() const;
 
+			enum ShaderTags : const size_t
+			{
+				_DefaultShader = 0
+			};
+
+			SolarFuel::Graphics::Shader& GetShader(const size_t _Index);
+			const SolarFuel::Graphics::Shader& GetShader(const size_t _Index) const;
+
+			enum MaterialTags : const size_t
+			{
+				_DefaultMaterial = 0
+			};
+
+			SolarFuel::Graphics::Material& GetMaterial(const size_t _Index);
+			const SolarFuel::Graphics::Material& GetMaterial(const size_t _Index) const;
+
 			void UpdateFullScreen();
 
 			void operator= (const Application& _Other) = delete;
@@ -52,8 +68,15 @@ namespace SolarSys
 
 			SolarFuel::Graphics::Renderer DefaultRenderer;
 
+			std::vector<SolarFuel::Graphics::Shader> Shaders;
+
+			std::vector<SolarFuel::Graphics::Material> Materials;
+
 			bool InitMainWindow();
 			void CleanUpMainWindow();
+
+			bool InitAssets();
+			void CleanUpAssets();
 
 			void Setup() override;
 			void Update() override;
@@ -84,6 +107,15 @@ namespace SolarSys
 		private:
 
 			bool Keys[2][256];
+
+			glm::vec2 Position;
+			float Zoom;
+
+			SolarFuel::Scene::Entity Scene;
+
+			float ElapsedTime;
+
+			void ResetSpawn();
 
 			void Setup() override;
 			void Update() override;

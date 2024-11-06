@@ -2,7 +2,7 @@
 
 
 
-SolarSys::RunTime::MainMenu::MainMenu() : Keys()
+SolarSys::RunTime::MainMenu::MainMenu() : Keys(), Position(), Zoom(), Scene(), ElapsedTime(0.0f)
 {
 	for (size_t _Index = 0; _Index < 256; _Index++)
 	{
@@ -21,8 +21,17 @@ const uint64_t SolarSys::RunTime::MainMenu::GetType() const
 	return _MainMenu;
 }
 
+void SolarSys::RunTime::MainMenu::ResetSpawn()
+{
+	Position = glm::vec2(0.0f, 0.0f);
+	Zoom = 30.0f;
+	ElapsedTime = 0.0f;
+}
+
 void SolarSys::RunTime::MainMenu::Setup()
 {
+	ResetSpawn();
+
 	DeleteInput();
 
 	TurnOn();
@@ -95,6 +104,83 @@ void SolarSys::RunTime::MainMenu::Engine()
 		_ApplicationObj.Close(0);
 	}
 
+	float _Speed = Zoom;
+	float _ZoomSpeed = 10.0f;
+	float _ZoomMin = 5.0f;
+
+	if (Keys[SolarFuel::_Current]['D'])
+	{
+		Position.x += GetTimeStep() * _Speed;
+	}
+
+	if (Keys[SolarFuel::_Current]['A'])
+	{
+		Position.x -= GetTimeStep() * _Speed;
+	}
+
+	if (Keys[SolarFuel::_Current]['W'])
+	{
+		Position.y += GetTimeStep() * _Speed;
+	}
+
+	if (Keys[SolarFuel::_Current]['S'])
+	{
+		Position.y -= GetTimeStep() * _Speed;
+	}
+
+	if (Keys[SolarFuel::_Current]['Q'])
+	{
+		Zoom += GetTimeStep() * _ZoomSpeed;
+	}
+
+	if (Keys[SolarFuel::_Current]['E'])
+	{
+		Zoom -= GetTimeStep() * _ZoomSpeed;
+
+		if (Zoom < _ZoomMin)
+		{
+			Zoom = _ZoomMin;
+		}
+	}
+
+	ElapsedTime += GetTimeStep();
+
+	Scene.DestroyAllChilds();
+
+	static float _Angle = 0.0f;
+
+	_Angle += GetTimeStep() * 30.0f;
+
+	SolarFuel::Scene::Entity* _Sun = new SolarFuel::Scene::Entity();
+
+	_Sun->Parent = &Scene;
+	_Sun->Position = glm::vec2(0.0f, 0.0f);
+	_Sun->Scale = glm::vec2(1.0f, 1.0f);
+	_Sun->Angle = _Angle;
+	_Sun->RotationFrequency = 0.0f;
+
+	SolarFuel::Scene::Entity* _Planet = new SolarFuel::Scene::Entity();
+
+	_Planet->Parent = _Sun;
+	_Planet->Position = glm::vec2(2.0f, 0.0f);
+	_Planet->Scale = glm::vec2(0.6f, 0.6f);
+	_Planet->Angle = _Angle * 2.0f;
+	_Planet->RotationFrequency = 20.0f;
+
+	SolarFuel::Scene::Entity* _Satelite = new SolarFuel::Scene::Entity();
+
+	_Satelite->Parent = _Planet;
+	_Satelite->Position = glm::vec2(1.0f, 0.0f);
+	_Satelite->Scale = glm::vec2(0.2f, 0.2f);
+	_Satelite->Angle = 0.0f;
+	_Satelite->RotationFrequency = 20.0f;
+
+	_Planet->Childs.push_back(_Satelite);
+
+	_Sun->Childs.push_back(_Planet);
+
+	Scene.Childs.push_back(_Sun);
+
 	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
 	_MainWindowData.CloseMutex->lock();
@@ -117,6 +203,8 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	uint64_t _Width, _Height;
 	_MainWindow.GetClientSize(_Width, _Height);
 
+	float _AspectRatio = (float)(_Width) / (float)(_Height);
+
 	HDC _hDC = GetDC(_MainWindow.GetHandle());
 	_MainWindowData.ContextMutex->lock();
 	wglMakeCurrent(_hDC, _MainWindowData.Context);
@@ -126,13 +214,56 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	PAINTSTRUCT _PaintStruct = { 0 };
 	_hDC = BeginPaint(_MainWindow.GetHandle(), &_PaintStruct);
 
-	glViewport(0, 0, _Width, _Height);
+	glViewport(0, 0, (int)(_Width), (int)(_Height));
 
-	//_Renderer.StartScene();
+	SolarFuel::Graphics::Camera _ActiveCamera;
 
-	//_Renderer.Submit();
+	_ActiveCamera.Position = Position;
+	_ActiveCamera.Angle = 0.0f;
+	_ActiveCamera.FieldOfView = Zoom;
 
-	//_Renderer.Flush();
+	_Renderer.StartScene(_ActiveCamera, _AspectRatio);
+
+	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
+	{
+		SolarFuel::Graphics::RenderObject _Object;
+
+		_Object.Model = _Entity->GetWorldMatrix();
+		_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+
+		_Renderer.Submit(_Object);
+	}
+
+	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
+	{
+		for (const SolarFuel::Scene::Entity* _SubEntity : _Entity->Childs)
+		{
+			SolarFuel::Graphics::RenderObject _Object;
+
+			_Object.Model = _SubEntity->GetWorldMatrix();
+			_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+
+			_Renderer.Submit(_Object);
+		}
+	}
+
+	for (const SolarFuel::Scene::Entity* _Entity : Scene.Childs)
+	{
+		for (const SolarFuel::Scene::Entity* _SubEntity : _Entity->Childs)
+		{
+			for (const SolarFuel::Scene::Entity* _SubSubEntity : _SubEntity->Childs)
+			{
+				SolarFuel::Graphics::RenderObject _Object;
+
+				_Object.Model = _SubSubEntity->GetWorldMatrix();
+				_Object.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+
+				_Renderer.Submit(_Object);
+			}
+		}
+	}
+
+	_Renderer.Flush();
 
 	wglSwapIntervalEXT(1);
 	SwapBuffers(_hDC);
