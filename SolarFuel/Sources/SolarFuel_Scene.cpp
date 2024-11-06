@@ -1,17 +1,16 @@
 #include "..\Headers\SolarFuel.hpp"
 
-float SpUp = 0.0f,SpDown = 0.0f, SpRight = 0.0f, SpLeft = 0.0f;
 
-static uint32_t nLehmer = 0;
 
-static uint32_t Lehmer32()
+static uint32_t LehmerSeed = 0;
+
+static uint32_t Lehmer()
 {
-	nLehmer += 0xe120fc15;
-	uint64_t tmp;
-	tmp = (uint64_t)nLehmer * 0x4a39b70d;
-	uint32_t m1 = (tmp >> 32) ^ tmp;
-	tmp = (uint64_t)m1 * 0x12fad5c9;
-	uint32_t m2 = (tmp >> 32) ^ tmp;
+	LehmerSeed += (uint32_t)(0xE120FC15);
+	uint64_t tmp = (uint64_t)(LehmerSeed) * (uint64_t)(0x4A39B70D);
+	uint32_t m1 = (uint32_t)((tmp >> 32) ^ tmp);
+	tmp = (uint64_t)(m1) * (uint64_t)(0x12FAD5C9);
+	uint32_t m2 = (uint32_t)((tmp >> 32) ^ tmp);
 	return m2;
 }
 
@@ -19,81 +18,70 @@ static uint32_t Lehmer32()
 
 void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, const float _Width, const float _Height, const float _ElapsedTime)
 {
-	float SpatiuIntreGriduri = 30;
-	float MinimScalare = 0.1f;
+	DestroyAllChilds();
 
-	float BeginX = (float)(_CameraPosition.x - _Width / 2) - floor((_CameraPosition.x - _Width / 2) / SpatiuIntreGriduri) * SpatiuIntreGriduri;
-	float BeginY = (float)(_CameraPosition.y - _Height / 2) - floor((_CameraPosition.y - _Height / 2) / SpatiuIntreGriduri) * SpatiuIntreGriduri;
-
-	for (float j = BeginY; j <= _CameraPosition.y + _Height / 2; j += SpatiuIntreGriduri)
+	if (Parent != nullptr)
 	{
-		for (float i = BeginX; i <= _CameraPosition.x + _Width / 2; i += SpatiuIntreGriduri)
-		{
-			float posX = i;
-			float posY = j;
-			nLehmer = ((int)(posY / SpatiuIntreGriduri)) << 20 | ((int)(posX / SpatiuIntreGriduri));
-			if (Lehmer32() % 256 < 32) {
-				Entity* entity = new Entity;
-				entity->Parent = this;
-				entity->Position = glm::vec2(posX, posY);
-				
-				std::default_random_engine gen(posX + posY);
-				std::uniform_real_distribution<float>SunScaleDistribution(3.0f*MinimScalare, (float)0.25f * SpatiuIntreGriduri);
-				float Scalare = SunScaleDistribution(gen);
-
-				entity->Scale = glm::vec2(Scalare, Scalare);
-				Childs.push_back(entity);
-			}
-		}
+		return;
 	}
-	
-	for (auto Sun : Childs)
+
+	constexpr float _GridUnit = 10.0f;
+	constexpr size_t _MaxPlanetsCount = 10;
+	constexpr size_t _MaxSatelitesCount = 10;
+
+	for (float _X = ceil((_CameraPosition.x - _Width / 2.0f) / _GridUnit) * _GridUnit; _X <= _CameraPosition.x + _Width / 2.0f; _X += _GridUnit)
 	{
-		srand(Sun->Position.x + Sun->Position.y);
-		
-		int NrPlanets = rand() % 7;
-		float Dist = (float) SpatiuIntreGriduri / 7;
-
-		std::default_random_engine gen(Sun->Position.x+Sun->Position.y);
-		std::uniform_real_distribution<float> FreqDistribution(0.01f, 5.0f);
-		std::uniform_real_distribution<float> PlanetScaleDistribution(2.0f*MinimScalare, (float)0.15f*SpatiuIntreGriduri);
-		std::uniform_real_distribution<float> SateliteScaleDistribution(MinimScalare,(float)0.05f*SpatiuIntreGriduri);
-
-
-		
-		for (int i = 0; i < NrPlanets; i++)
+		for (float _Y = ceil((_CameraPosition.y - _Height / 2.0f) / _GridUnit) * _GridUnit; _Y < _CameraPosition.y + _Height / 2.0f; _Y += _GridUnit)
 		{
-			Entity* Planet = new Entity;
-			Planet->Parent = Sun;
-			Planet->Position = glm::vec2(Dist*(i+1), Sun->Position.y);
-			Planet->RotationFrequency = FreqDistribution(gen);
-			Planet->Angle = std::sin(Planet->RotationFrequency) * _ElapsedTime;
+			LehmerSeed = ((uint32_t)(_X / _GridUnit) << 16) + (uint32_t)(_Y / _GridUnit);
 
-			float ScalarePlaneta = PlanetScaleDistribution(gen);
-			Planet->Scale = glm::vec2(ScalarePlaneta, ScalarePlaneta);
-
-			Sun->Childs.push_back(Planet);
-
-			int NrSatelites = rand() % 4;
-			
-			float DistSatelites =(float) Dist / 4;
-			for (int j = 0; j < NrSatelites; j++)
+			if (Lehmer() % 256 >= 32)
 			{
-				Entity* Satelite = new Entity;
-				Satelite->Parent = Planet;
-				Satelite->Position = glm::vec2(Planet->Position.x, DistSatelites * (j + 1));
-				Satelite->RotationFrequency = FreqDistribution(gen);
-				Satelite->Angle = std::sin(Satelite->RotationFrequency) * _ElapsedTime;
+				continue;
+			}
 
-				float ScalareSatelit = SateliteScaleDistribution(gen);
-				Satelite->Scale = glm::vec2(ScalareSatelit, ScalareSatelit);
+			Entity* _Sun = new Entity();
 
-				Planet->Childs.push_back(Satelite);
+			_Sun->Parent = this;
+			_Sun->Position = glm::vec2(_X, _Y);
+			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 1.0f;
+			_Sun->Angle = 0.0f;
+			_Sun->RotationFrequency = 0.0f;
+
+			Childs.push_back(_Sun);
+
+			size_t _PlanetsCount = Lehmer() % _MaxPlanetsCount;
+
+			for (size_t _PlanetIndex = 0; _PlanetIndex < _PlanetsCount; _PlanetIndex++)
+			{
+				Entity* _Planet = new Entity();
+
+				_Planet->Parent = _Sun;
+				_Planet->Position = glm::vec2((float)(_PlanetIndex + 1), 0.0f);
+				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 0.5f;
+				_Planet->Angle = 0.0f;
+				_Planet->RotationFrequency = 0.0f;
+
+				_Sun->Childs.push_back(_Planet);
+
+				size_t _SatelitesCount = Lehmer() % _MaxPlanetsCount;
+
+				for (size_t _SateliteIndex = 0; _SateliteIndex < _SatelitesCount; _SateliteIndex++)
+				{
+					Entity* _Satelite = new Entity();
+
+					_Satelite->Parent = _Planet;
+					_Satelite->Position = glm::vec2((float)(_SateliteIndex + 1), 0.0f);
+					_Satelite->Scale = glm::vec2(1.0f, 1.0f) * 0.25f;
+					_Satelite->Angle = 0.0f;
+					_Satelite->RotationFrequency = 0.0f;
+
+					_Planet->Childs.push_back(_Satelite);
+				}
 			}
 		}
 	}
 }
-
 
 void SolarFuel::Scene::Entity::DestroyAllChilds()
 {

@@ -145,41 +145,12 @@ void SolarSys::RunTime::MainMenu::Engine()
 
 	ElapsedTime += GetTimeStep();
 
+	uint64_t _Width, _Height;
+	_MainWindow.GetClientSize(_Width, _Height);
+	float _AspectRatio = (float)(_Width) / (float)(_Height);
+
 	Scene.DestroyAllChilds();
-
-	static float _Angle = 0.0f;
-
-	_Angle += GetTimeStep() * 30.0f;
-
-	SolarFuel::Scene::Entity* _Sun = new SolarFuel::Scene::Entity();
-
-	_Sun->Parent = &Scene;
-	_Sun->Position = glm::vec2(0.0f, 0.0f);
-	_Sun->Scale = glm::vec2(1.0f, 1.0f);
-	_Sun->Angle = _Angle;
-	_Sun->RotationFrequency = 0.0f;
-
-	SolarFuel::Scene::Entity* _Planet = new SolarFuel::Scene::Entity();
-
-	_Planet->Parent = _Sun;
-	_Planet->Position = glm::vec2(2.0f, 0.0f);
-	_Planet->Scale = glm::vec2(0.6f, 0.6f);
-	_Planet->Angle = _Angle * 2.0f;
-	_Planet->RotationFrequency = 20.0f;
-
-	SolarFuel::Scene::Entity* _Satelite = new SolarFuel::Scene::Entity();
-
-	_Satelite->Parent = _Planet;
-	_Satelite->Position = glm::vec2(1.0f, 0.0f);
-	_Satelite->Scale = glm::vec2(0.2f, 0.2f);
-	_Satelite->Angle = 0.0f;
-	_Satelite->RotationFrequency = 20.0f;
-
-	_Planet->Childs.push_back(_Satelite);
-
-	_Sun->Childs.push_back(_Planet);
-
-	Scene.Childs.push_back(_Sun);
+	Scene.GenerateSystem(Position, Zoom * _AspectRatio, Zoom, ElapsedTime);
 
 	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
