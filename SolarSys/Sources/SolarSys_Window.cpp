@@ -209,6 +209,16 @@ LRESULT CALLBACK SolarSys::Window::WindowProcedure(_In_ HWND _hWnd, _In_ UINT _M
 
 	switch (_Msg)
 	{
+	case WM_SETCURSOR:
+	{
+		if (LOWORD(_lParam) == HTCLIENT)
+		{
+			SetCursor(NULL);
+			return 0;
+		}
+
+		return DefWindowProc(_hWnd, _Msg, _wParam, _lParam);
+	}
 	case WM_CLOSE:
 	{
 		_WndData->CloseMutex->lock();
