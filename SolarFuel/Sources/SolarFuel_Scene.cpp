@@ -42,7 +42,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 
 			_Sun->Parent = this;
 			_Sun->Position = glm::vec2(_X, _Y);
-			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 10.0f;
+			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 20.0f;
 			_Sun->RotationFrequency = (float)(Lehmer() % 50 + 30);
 			_Sun->Angle = _ElapsedTime * _Sun->RotationFrequency + (float)(Lehmer() % 360);
 			_Sun->Material = Lehmer() % (_EndMaterialsSuns - _BeginMaterialsSuns) + _BeginMaterialsSuns;
@@ -57,7 +57,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 
 				_Planet->Parent = _Sun;
 				_Planet->Position = glm::rotate(glm::mat4(1.0f), glm::radians((float)(Lehmer() % 360)), glm::vec3(0.0f, 0.0f, 1.0f)) * glm::vec4((float)(_PlanetIndex) * 2.0f + 6.0f, 0.0f, 0.0f, 1.0f);
-				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 1.0f;
+				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 0.5f;
 				_Planet->RotationFrequency = (float)(Lehmer() % 30 + 10);
 				_Planet->Angle = _ElapsedTime * _Planet->RotationFrequency + (float)(Lehmer() % 360);
 				_Planet->Material = Lehmer() % (_EndMaterialsPlanets - _BeginMaterialsPlanets) + _BeginMaterialsPlanets;
