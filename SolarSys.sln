@@ -510,6 +510,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "simd", "simd", "{259F9028-8
 		Solution Items\Dependencies\glm\Headers\glm\simd\vector_relational.h = Solution Items\Dependencies\glm\Headers\glm\simd\vector_relational.h
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{10F590D1-9832-4EB9-B81C-936B531FCC5F}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Documentation\SolarSys_Docs.pdf = Solution Items\Documentation\SolarSys_Docs.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe Resources", "ReadMe Resources", "{A894F067-E1CC-474D-AD33-FA82B2667759}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\ReadMe Resources\SolarSys_ScreenShot.png = Solution Items\ReadMe Resources\SolarSys_ScreenShot.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -557,6 +567,8 @@ Global
 		{C0E7E4E0-597B-4C20-8A4F-C3F0CD1A41E9} = {F39A11AC-E582-4114-B459-7C35CB1E18A6}
 		{98F96B01-DF5B-443A-819A-382CBA84FBF4} = {F39A11AC-E582-4114-B459-7C35CB1E18A6}
 		{259F9028-8816-498A-99A4-E61CEEA25F08} = {F39A11AC-E582-4114-B459-7C35CB1E18A6}
+		{10F590D1-9832-4EB9-B81C-936B531FCC5F} = {73947F39-3797-4C75-B010-C5AB3E421D68}
+		{A894F067-E1CC-474D-AD33-FA82B2667759} = {73947F39-3797-4C75-B010-C5AB3E421D68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E2B23BE-6946-4FD3-B64C-78D81C8AEF14}
