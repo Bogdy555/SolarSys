@@ -150,7 +150,7 @@ void SolarSys::RunTime::MainMenu::Engine()
 	float _AspectRatio = (float)(_Width) / (float)(_Height);
 
 	Scene.DestroyAllChilds();
-	Scene.GenerateSystem(Position, Zoom * _AspectRatio * 10.0f, Zoom * 10.0f, ElapsedTime);
+	Scene.GenerateSystem(Position, Zoom * _AspectRatio * 10.0f, Zoom * 10.0f, ElapsedTime, 1, 3, 3, 8, 3, 8);
 
 	_ApplicationObj.SetSync(_MainWindow.GetRefreshRate());
 
@@ -191,7 +191,7 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 	_ActiveCamera.Angle = 0.0f;
 	_ActiveCamera.FieldOfView = Zoom;
 
-	_Renderer.StartScene(_ActiveCamera, _AspectRatio);
+	_Renderer.StartScene(_ActiveCamera, _AspectRatio, ElapsedTime);
 
 	struct QueueObject
 	{
@@ -212,7 +212,7 @@ void SolarSys::RunTime::MainMenu::FrameBuild()
 			SolarFuel::Graphics::RenderObject _RenderObject;
 
 			_RenderObject.Model = _CurrentObject.Transform * _Child->GetLocalMatrix();
-			_RenderObject.Material = &_ApplicationObj.GetMaterial(Application::_DefaultMaterial);
+			_RenderObject.Material = &_ApplicationObj.GetMaterial(_Child->Material);
 
 			_Renderer.Submit(_RenderObject);
 

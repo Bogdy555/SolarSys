@@ -37,8 +37,22 @@
     <None Include="Resources\SolarSys_EnglishUS.rc2">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\Default\SolarSys_Vert.glsl" />
-    <None Include="Resources\Shaders\Default\SolarSys_Frag.glsl" />
+    <None Include="Resources\Shaders\Default\SolarSys_Default_Frag.glsl" />
+    <None Include="Resources\Shaders\Default\SolarSys_Default_Vert.glsl" />
+    <None Include="Resources\Shaders\Planet 1\SolarSys_Planet1_Frag.glsl" />
+    <None Include="Resources\Shaders\Planet 1\SolarSys_Planet1_Vert.glsl" />
+    <None Include="Resources\Shaders\Planet 2\SolarSys_Planet2_Frag.glsl" />
+    <None Include="Resources\Shaders\Planet 2\SolarSys_Planet2_Vert.glsl" />
+    <None Include="Resources\Shaders\Planet 3\SolarSys_Planet3_Frag.glsl" />
+    <None Include="Resources\Shaders\Planet 3\SolarSys_Planet3_Vert.glsl" />
+    <None Include="Resources\Shaders\Planet 4\SolarSys_Planet4_Frag.glsl" />
+    <None Include="Resources\Shaders\Planet 4\SolarSys_Planet4_Vert.glsl" />
+    <None Include="Resources\Shaders\Planet 5\SolarSys_Planet5_Frag.glsl" />
+    <None Include="Resources\Shaders\Planet 5\SolarSys_Planet5_Vert.glsl" />
+    <None Include="Resources\Shaders\Sun 1\SolarSys_Sun1_Frag.glsl" />
+    <None Include="Resources\Shaders\Sun 1\SolarSys_Sun1_Vert.glsl" />
+    <None Include="Resources\Shaders\Sun 2\SolarSys_Sun2_Frag.glsl" />
+    <None Include="Resources\Shaders\Sun 2\SolarSys_Sun2_Vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\SolarSys.hpp">

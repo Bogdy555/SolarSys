@@ -9,6 +9,7 @@ in vec2 vf_TextureCoords;
 
 uniform mat4 u_Mvp;
 uniform vec4 u_Color;
+uniform float u_ElapsedTime;
 
 
 

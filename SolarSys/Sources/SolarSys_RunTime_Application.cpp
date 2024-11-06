@@ -186,23 +186,163 @@ void SolarSys::RunTime::Application::CleanUpMainWindow()
 bool SolarSys::RunTime::Application::InitAssets()
 {
 	{
-		SolarFuel::Graphics::Shader _DefaultShader;
+		SolarFuel::Graphics::Shader _Shader;
 
-		if (!_DefaultShader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_FRAGMENT_SHADER)))
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_FRAGMENT_SHADER)))
 		{
 			return false;
 		}
 
-		Shaders.push_back(_DefaultShader);
+		Shaders.push_back(_Shader);
 	}
 
 	{
-		SolarFuel::Graphics::Material _DefaultMaterial;
+		SolarFuel::Graphics::Shader _Shader;
 
-		_DefaultMaterial.Shader = &Shaders[0];
-		_DefaultMaterial.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_1_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_1_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
 
-		Materials.push_back(_DefaultMaterial);
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_2_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_2_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_3_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_3_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_4_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_4_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_5_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_PLANET_5_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_SUN_1_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_SUN_1_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Shader _Shader;
+
+		if (!_Shader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_SUN_2_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_SUN_2_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_Shader);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[0];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[1];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[2];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[3];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[4];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[5];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[6];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
+	}
+
+	{
+		SolarFuel::Graphics::Material _Material;
+
+		_Material.Shader = &Shaders[7];
+		_Material.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_Material);
 	}
 
 	return true;

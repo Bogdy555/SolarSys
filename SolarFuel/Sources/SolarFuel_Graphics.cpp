@@ -291,6 +291,7 @@ bool SolarFuel::Graphics::Shader::Load(const LPCWSTR _VertResId, const LPCWSTR _
 
 	MvpId = glGetUniformLocation(Id, "u_Mvp");
 	ColorId = glGetUniformLocation(Id, "u_Color");
+	ElapsedTimeId = glGetUniformLocation(Id, "u_ElapsedTime");
 
 	return true;
 }
@@ -305,6 +306,7 @@ void SolarFuel::Graphics::Shader::Destroy()
 
 	MvpId = -1;
 	ColorId = -1;
+	ElapsedTimeId = -1;
 }
 
 
@@ -368,10 +370,11 @@ void SolarFuel::Graphics::Renderer::Destroy()
 	}
 }
 
-void SolarFuel::Graphics::Renderer::StartScene(const Camera& _ActiveCamera, const float _AspectRatio)
+void SolarFuel::Graphics::Renderer::StartScene(const Camera& _ActiveCamera, const float _AspectRatio, const float _ElapsedTime)
 {
 	ProjectionView = _ActiveCamera.GetProjectionMatrix(_AspectRatio) * _ActiveCamera.GetViewMatrix();
 	RenderObjects.clear();
+	ElapsedTime = _ElapsedTime;
 }
 
 void SolarFuel::Graphics::Renderer::Submit(const RenderObject& _Object)
@@ -395,10 +398,12 @@ void SolarFuel::Graphics::Renderer::Flush()
 		glUseProgram(_Object.Material->Shader->Id);
 		glUniformMatrix4fv(_Object.Material->Shader->MvpId, 1, GL_FALSE, &_Mvp[0][0]);
 		glUniform4fv(_Object.Material->Shader->ColorId, 1, &_Object.Material->Color[0]);
+		glUniform1fv(_Object.Material->Shader->ElapsedTimeId, 1, &ElapsedTime);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 
 	ProjectionView = glm::mat4(1.0f);
 	RenderObjects.clear();
+	ElapsedTime = 0.0f;
 }

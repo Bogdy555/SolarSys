@@ -16,7 +16,7 @@ static uint32_t Lehmer()
 
 
 
-void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, const float _Width, const float _Height, const float _ElapsedTime)
+void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, const float _Width, const float _Height, const float _ElapsedTime, const size_t _BeginMaterialsSuns, const size_t _EndMaterialsSuns, const size_t _BeginMaterialsPlanets, const size_t _EndMaterialsPlanets, const size_t _BeginMaterialsSatelites, const size_t _EndMaterialsSatelites)
 {
 	DestroyAllChilds();
 
@@ -45,6 +45,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 			_Sun->Scale = glm::vec2(1.0f, 1.0f) * 10.0f;
 			_Sun->RotationFrequency = (float)(Lehmer() % 50 + 30);
 			_Sun->Angle = _ElapsedTime * _Sun->RotationFrequency + (float)(Lehmer() % 360);
+			_Sun->Material = Lehmer() % (_EndMaterialsSuns - _BeginMaterialsSuns) + _BeginMaterialsSuns;
 
 			Childs.push_back(_Sun);
 
@@ -59,6 +60,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 				_Planet->Scale = glm::vec2(1.0f, 1.0f) * 1.0f;
 				_Planet->RotationFrequency = (float)(Lehmer() % 30 + 10);
 				_Planet->Angle = _ElapsedTime * _Planet->RotationFrequency + (float)(Lehmer() % 360);
+				_Planet->Material = Lehmer() % (_EndMaterialsPlanets - _BeginMaterialsPlanets) + _BeginMaterialsPlanets;
 
 				_Sun->Childs.push_back(_Planet);
 
@@ -73,6 +75,7 @@ void SolarFuel::Scene::Entity::GenerateSystem(const glm::vec2& _CameraPosition, 
 					_Satelite->Scale = glm::vec2(1.0f, 1.0f) * 0.5f;
 					_Satelite->RotationFrequency = (float)(Lehmer() % 10 + 5);
 					_Satelite->Angle = _ElapsedTime * _Satelite->RotationFrequency + (float)(Lehmer() % 360);
+					_Satelite->Material = Lehmer() % (_EndMaterialsSatelites - _BeginMaterialsSatelites) + _BeginMaterialsSatelites;
 
 					_Planet->Childs.push_back(_Satelite);
 				}

@@ -55,6 +55,7 @@ namespace SolarFuel
 			GLuint Id = 0;
 			GLint MvpId = -1;
 			GLint ColorId = -1;
+			GLint ElapsedTimeId = -1;
 
 			bool Load(const LPCWSTR _VertResId, const LPCWSTR _FragResId);
 			void Destroy();
@@ -76,6 +77,7 @@ namespace SolarFuel
 		{
 			glm::mat4 ProjectionView = glm::mat4(1.0f);
 			std::vector<RenderObject> RenderObjects;
+			float ElapsedTime = 0.0f;
 			GLuint QuadVAO = 0;
 			GLuint QuadVBO = 0;
 			GLuint QuadIBO = 0;
@@ -83,7 +85,7 @@ namespace SolarFuel
 			void Init();
 			void Destroy();
 
-			void StartScene(const Camera& _ActiveCamera, const float _AspectRatio);
+			void StartScene(const Camera& _ActiveCamera, const float _AspectRatio, const float _ElapsedTime);
 			void Submit(const RenderObject& _Object);
 			void Flush();
 		};
