@@ -36,6 +36,9 @@ namespace SolarSys
 			int32_t MinWidth;
 			int32_t MinHeight;
 
+			std::mutex* ContextMutex;
+			HGLRC Context;
+
 			Data();
 			Data(const Data& _Other);
 			Data(Data&& _Other) noexcept;

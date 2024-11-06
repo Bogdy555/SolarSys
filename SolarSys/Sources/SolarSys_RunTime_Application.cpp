@@ -2,7 +2,7 @@
 
 
 
-SolarSys::RunTime::Application::Application() : SolarFuel::RunTime::Application(), MainWindow(), MainWindowData(), PlacementMutex(), RectMutex(), FullScreenMutex(), CloseMutex(), InputMutex(), MinSizeMutex()
+SolarSys::RunTime::Application::Application() : SolarFuel::RunTime::Application(), MainWindow(), MainWindowData(), PlacementMutex(), RectMutex(), FullScreenMutex(), CloseMutex(), InputMutex(), MinSizeMutex(), ContextMutex(), DefaultRenderer(), Shaders(), Materials()
 {
 
 }
@@ -30,6 +30,36 @@ SolarSys::Window::Data& SolarSys::RunTime::Application::GetMainWindowData()
 const SolarSys::Window::Data& SolarSys::RunTime::Application::GetMainWindowData() const
 {
 	return MainWindowData;
+}
+
+SolarFuel::Graphics::Renderer& SolarSys::RunTime::Application::GetDefaultRenderer()
+{
+	return DefaultRenderer;
+}
+
+const SolarFuel::Graphics::Renderer& SolarSys::RunTime::Application::GetDefaultRenderer() const
+{
+	return DefaultRenderer;
+}
+
+SolarFuel::Graphics::Shader& SolarSys::RunTime::Application::GetShader(const size_t _Index)
+{
+	return Shaders[_Index];
+}
+
+const SolarFuel::Graphics::Shader& SolarSys::RunTime::Application::GetShader(const size_t _Index) const
+{
+	return Shaders[_Index];
+}
+
+SolarFuel::Graphics::Material& SolarSys::RunTime::Application::GetMaterial(const size_t _Index)
+{
+	return Materials[_Index];
+}
+
+const SolarFuel::Graphics::Material& SolarSys::RunTime::Application::GetMaterial(const size_t _Index) const
+{
+	return Materials[_Index];
 }
 
 void SolarSys::RunTime::Application::UpdateFullScreen()
@@ -127,6 +157,7 @@ bool SolarSys::RunTime::Application::InitMainWindow()
 	MainWindowData.CloseMutex = &CloseMutex;
 	MainWindowData.MinSizeMutex = &MinSizeMutex;
 	MainWindowData.InputMutex = &InputMutex;
+	MainWindowData.ContextMutex = &ContextMutex;
 
 	if (!MainWindow.Create(NULL, SOLAR_SYS_WND_CLASS_NAME, L"SolarSys", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_DESKTOP, NULL, GetInstanceHandle(), nullptr, NULL, Window::InitWindowThread, Window::CleanUpWindowThread, Window::InitWindow, Window::CleanUpWindow, &MainWindowData))
 	{
@@ -152,6 +183,43 @@ void SolarSys::RunTime::Application::CleanUpMainWindow()
 	UnregisterClass(SOLAR_SYS_WND_CLASS_NAME, GetInstanceHandle());
 }
 
+bool SolarSys::RunTime::Application::InitAssets()
+{
+	{
+		SolarFuel::Graphics::Shader _DefaultShader;
+
+		if (!_DefaultShader.Load(MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_VERTEX_SHADER), MAKEINTRESOURCE(SOLAR_SYS_IDS_DEFAULT_FRAGMENT_SHADER)))
+		{
+			return false;
+		}
+
+		Shaders.push_back(_DefaultShader);
+	}
+
+	{
+		SolarFuel::Graphics::Material _DefaultMaterial;
+
+		_DefaultMaterial.Shader = &Shaders[0];
+		_DefaultMaterial.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		Materials.push_back(_DefaultMaterial);
+	}
+
+	return true;
+}
+
+void SolarSys::RunTime::Application::CleanUpAssets()
+{
+	for (size_t _Index = 0; _Index < Shaders.size(); _Index++)
+	{
+		Shaders[_Index].Destroy();
+	}
+
+	Shaders.clear();
+
+	Materials.clear();
+}
+
 void SolarSys::RunTime::Application::Setup()
 {
 	if (GetArgC() != 1)
@@ -165,6 +233,22 @@ void SolarSys::RunTime::Application::Setup()
 		Close(-1);
 		return;
 	}
+
+	HDC _hDC = GetDC(MainWindow.GetHandle());
+	MainWindowData.CloseMutex->lock();
+	wglMakeCurrent(_hDC, MainWindowData.Context);
+	MainWindowData.CloseMutex->unlock();
+
+	if (!InitAssets())
+	{
+		Close(-1);
+		return;
+	}
+
+	DefaultRenderer.Init();
+
+	ReleaseDC(MainWindow.GetHandle(), _hDC);
+	wglMakeCurrent(NULL, NULL);
 
 	if (!MainWindow.Show(GetShowCmd()))
 	{
@@ -196,5 +280,7 @@ void SolarSys::RunTime::Application::Update()
 
 void SolarSys::RunTime::Application::Stop()
 {
+	DefaultRenderer.Destroy();
+	CleanUpAssets();
 	CleanUpMainWindow();
 }
