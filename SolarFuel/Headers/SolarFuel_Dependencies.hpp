@@ -20,6 +20,10 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <random>
+#include <cmath>
+#include <vector>
+#include <queue>
 
 
 
@@ -56,6 +60,21 @@ namespace SolarFuel
 	{
 
 		struct Entity;
+
+	}
+
+	namespace Graphics
+	{
+
+		struct Camera;
+
+		struct Shader;
+
+		struct Material;
+
+		struct RenderObject;
+
+		struct Renderer;
 
 	}
 
